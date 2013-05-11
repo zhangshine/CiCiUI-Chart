@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Line Chart</title>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.ciciui-chart.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.js" ></script>
+    <script type="text/javascript" src="../js/excanvas.js" ></script>
+    <script type="text/javascript" src="../js/jquery.ciciui-chart.js" ></script>
+</head>
+<body>
+<div id="line-chart-positive" style="width: 700px; height: 400px;"></div><hr />
+<div id="line-chart-positive-decimal" style="width: 700px; height: 400px;"></div><hr />
+<div id="line-chart-negative" style="width: 700px; height: 400px;"></div><hr />
+<div id="line-chart-negative-decimal" style="width: 700px; height: 400px;"></div><hr />
+<div id="line-chart-negative-decimal-mix" style="width: 700px; height: 400px;"></div><hr />
+
+<div id="line-area-chart-positive" style="width: 700px; height: 400px;"></div><hr />
+<script type="text/javascript">
+    var dataTablePositive = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", 28, 48, 10, 99],
+        ["Tuesday", 30, 44, 11, 8],
+        ["Friday", 33, 50, 12, 200],
+        ["Sunday", 37, 100, 13, 133]
+    ];
+    var dataTablePositiveDecimal = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", .0028, .0048, .0010, .0099],
+        ["Tuesday", .0030, .0044, .0011, .0008],
+        ["Friday", .0033, .0050, .0012, .0200],
+        ["Sunday", .0037, .0100, .0013, .0133]
+    ];
+    var dataTableNegative = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", -28, -48, -10, -99],
+        ["Tuesday", -30, -44, -11, -8],
+        ["Friday", -33, -50, -12, -200],
+        ["Sunday", -37, -100, -13, -133]
+    ];
+    var dataTableNegativeDecimal = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", -.0028, -.0048, -.0010, -.0099],
+        ["Tuesday", -.0030, -.0044, -.0011, -.0008],
+        ["Friday", -.0033, -.0050, -.0012, -.0200],
+        ["Sunday", -.0037, -.0100, -.0013, -.0133]
+    ];
+    var dataTableNegativeDecimalMix = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", -.0028, -.0048, -.0010, -.0099],
+        ["Tuesday", -.0030, -.0044, -.0011, -.0008],
+        ["Friday", -.0033, -.0050, -.0012, .0200],
+        ["Sunday", -.0037, -.0100, -.0013, -.0133]
+    ];
+    var lineArea = [
+        ["Date", "Alina", "Ben"],
+        ["Monday", 48, 28],
+        ["Tuesday", 44, 80],
+        ["Friday", 50, 33],
+        ["Sunday", 100, 67]
+    ];
+    $(window).ready(function(){
+        $("#line-chart-positive").Line(dataTablePositive, {title: "CiCiUI Line Chart"});
+        $("#line-chart-positive-decimal").Line(dataTablePositiveDecimal);
+        $("#line-chart-negative").Line(dataTableNegative);
+        $("#line-chart-negative-decimal").Line(dataTableNegativeDecimal);
+        $("#line-chart-negative-decimal-mix").Line(dataTableNegativeDecimalMix);
+        $("#line-area-chart-positive").Line(lineArea, {type : "Area"});
+    });
+</script>
+</body>
+</html>

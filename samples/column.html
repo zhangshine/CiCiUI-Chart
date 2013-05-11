@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Column Chart</title>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.ciciui-chart.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.js" ></script>
+    <script type="text/javascript" src="../js/excanvas.js" ></script>
+    <script type="text/javascript" src="../js/jquery.ciciui-chart.js" ></script>
+</head>
+<body>
+<div id="column-chart-positive" style="width: 700px; height: 400px;"></div><hr />
+<div id="column-chart-positive-decimal" style="width: 700px; height: 400px;"></div><hr />
+<div id="column-chart-negative" style="width: 700px; height: 400px;"></div><hr />
+<div id="column-chart-negative-decimal" style="width: 700px; height: 400px;"></div><hr />
+<div id="column-chart-negative-decimal-mix" style="width: 700px; height: 400px;"></div><hr />
+<div id="column-chart-positive-single" style="width: 700px; height: 400px;"></div><hr />
+<div id="column-chart-positive-single-header" style="width: 700px; height: 400px;"></div><hr />
+<script type="text/javascript">
+    var dataTablePositive = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", 28, 48, 10, 99],
+        ["Tuesday", 30, 44, 11, 8],
+        ["Friday", 33, 50, 12, 200],
+        ["Sunday", 37, 100, 13, 133]
+    ];
+    var dataTablePositiveDecimal = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", .0028, .0048, .0010, .0099],
+        ["Tuesday", .0030, .0044, .0011, .0008],
+        ["Friday", .0033, .0050, .0012, .0200],
+        ["Sunday", .0037, .0100, .0013, .0133]
+    ];
+    var dataTableNegative = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", -28, -48, -10, -99],
+        ["Tuesday", -30, -44, -11, -8],
+        ["Friday", -33, -50, -12, -200],
+        ["Sunday", -37, -100, -13, -133]
+    ];
+    var dataTableNegativeDecimal = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", -.0028, -.0048, -.0010, -.0099],
+        ["Tuesday", -.0030, -.0044, -.0011, -.0008],
+        ["Friday", -.0033, -.0050, -.0012, -.0200],
+        ["Sunday", -.0037, -.0100, -.0013, -.0133]
+    ];
+    var dataTableNegativeDecimalMix = [
+        ["Date", "Alina", "Ben", "CoCo", "DoDo"],
+        ["Monday", -.0028, -.0048, -.0010, -.0099],
+        ["Tuesday", -.0030, -.0044, -.0011, -.0008],
+        ["Friday", -.0033, -.0050, -.0012, .0200],
+        ["Sunday", -.0037, -.0100, -.0013, -.0133]
+    ];
+    var dataTablePositiveSingle = [
+        ["Date", "Alina", "Ben", "CoCo"],
+        ["Monday", 28, 48, 10]
+    ];
+    var dataTablePositiveSingleHeader = [
+        ["Date", "Alina"],
+        ["Monday", 28],
+        ["Tuesday", 30],
+        ["Friday", 33]
+    ];
+    $(window).ready(function(){
+        $("#column-chart-positive").Column(dataTablePositive, {title: "CiCiUI Column Chart"});
+        $("#column-chart-positive-decimal").Column(dataTablePositiveDecimal);
+        $("#column-chart-negative").Column(dataTableNegative);
+        $("#column-chart-negative-decimal").Column(dataTableNegativeDecimal);
+        $("#column-chart-negative-decimal-mix").Column(dataTableNegativeDecimalMix);
+        $("#column-chart-positive-single").Column(dataTablePositiveSingle, {title: "CiCiUI"});
+        $("#column-chart-positive-single-header").Column(dataTablePositiveSingleHeader, {title: "CiCiUI"});
+    });
+</script>
+</body>
+</html>

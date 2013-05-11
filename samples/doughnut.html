@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doughnut Chart</title>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.ciciui-chart.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.js" ></script>
+    <script type="text/javascript" src="../js/excanvas.js" ></script>
+    <script type="text/javascript" src="../js/jquery.ciciui-chart.js" ></script>
+</head>
+<body>
+    <div id="doughnut-chart-single" style="width: 700px; height: 400px;"></div>
+    <div id="doughnut-chart-multi" style="width: 700px; height: 400px;"></div>
+    <script type="text/javascript">
+        var dataTableSingle = [
+                ['Name', 'Purchase'],
+                ['Titan', 108],
+                ['Maria', 101],
+                ['Rose', 153],
+                ['Shina', 245]
+        ];
+        var dataTableMulti = [
+            ['Name', 'Purchase', 'Sell'],
+            ['Titan', 108, 111],
+            ['Maria', 101, 100],
+            ['Rose', 153, 140],
+            ['Shina', 245, 90]
+        ];
+        $(window).ready(function(){
+            $("#doughnut-chart-single").Doughnut(dataTableSingle, {title: "CiCiUI Doughnut Chart"});
+            $("#doughnut-chart-multi").Doughnut(dataTableMulti);
+        });
+    </script>
+</body>
+</html>

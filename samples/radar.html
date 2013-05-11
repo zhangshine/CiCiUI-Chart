@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Radar Chart</title>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.ciciui-chart.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.js" ></script>
+    <script type="text/javascript" src="../js/excanvas.js" ></script>
+    <script type="text/javascript" src="../js/jquery.ciciui-chart.js" ></script>
+</head>
+<body>
+    <div id="radar-chart" style="width: 700px; height: 400px;"></div>
+    <div id="radar-chart-single" style="width: 700px; height: 400px;"></div>
+    <script type="text/javascript">
+        var dataTable = [
+                ['Name', 'Atk', 'Vit', 'Hp', 'Cgi', 'Rng'],
+                ['Titan', 90, 60, 99, 20, 10],
+                ['Maria', 60, 88, 55, 99, 70],
+                ['Rose', 70, 76, 33, 30, 100],
+                ['Shina', 100, 67, 85, 60, 55]
+        ];
+        var dataTableSingle = [
+            ['Name', 'Atk', 'Vit', 'Hp', 'Cgi', 'Rng'],
+            ['Titan', 90, 60, 99, 20, 10]
+        ];
+        $(window).ready(function(){
+            $("#radar-chart").Radar(dataTable, {title: "CiCiUI Radar Chart"});
+            $("#radar-chart-single").Radar(dataTableSingle, {title: "CiCiUI Radar Chart"});
+        });
+    </script>
+</body>
+</html>

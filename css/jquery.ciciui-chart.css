@@ -1,0 +1,20 @@
+.ciciui-chart {
+    position: relative;
+}
+
+.chart-tooltip {
+    background-color: #FFF;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    border: 1px solid #999999;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.desc {
+    margin: 5px 5px;
+    white-space: nowrap;
+}

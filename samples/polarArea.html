@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Polar Area Chart</title>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.ciciui-chart.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.js" ></script>
+    <script type="text/javascript" src="../js/excanvas.js" ></script>
+    <script type="text/javascript" src="../js/jquery.ciciui-chart.js" ></script>
+</head>
+<body>
+    <div id="polar-area-chart" style="width: 700px; height: 400px;"></div>
+    <script type="text/javascript">
+        var dataTable = [
+            ['Name', 'Purchase'],
+            ['Titan', 150],
+            ['Maria', 101],
+            ['Rose', 153],
+            ['Shina', 245],
+            ['King', 44],
+            ['Human', 250]
+        ];
+        $(window).ready(function(){
+            $("#polar-area-chart").PolarArea(dataTable, {title: "CiCiUI Polar Area Chart"});
+        });
+    </script>
+</body>
+</html>

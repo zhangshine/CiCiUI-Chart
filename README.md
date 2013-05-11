@@ -8,7 +8,7 @@ http://ciciui.com/chart/index.html#column
 
 Documentation
 -------------
-http://ciciui.com/chart/documentation.html
+http://ciciui.com/chart/documentation/index.html
 
 License
 -------
@@ -17,3 +17,10 @@ For non-commercial, personal projects and applications, you may use CiCiUI Chart
 #### Commercial License
 This is the appropriate option if you want to use CiCiUI Chart to develop commercial websites or applications. Please refer to the following link for more details   
 http://ciciui.com/chart/purchase.html
+
+Compress
+--------
+```bash
+npm install
+./compress.sh
+```

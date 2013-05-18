@@ -68,7 +68,7 @@
             position: 'absolute',
             top: 0,
             left: 0
-        }).appendTo(canvasDiv)[0];
+        }).addClass('canvas').appendTo(canvasDiv)[0];
         this.tooltipDiv = $('<div class="chart-tooltip"></div>').appendTo(canvasDiv).hide()[0];
         var maskCanvas = $('<canvas>').attr({
             width: width,
@@ -77,7 +77,7 @@
             position: 'absolute',
             top: 0,
             left: 0
-        }).appendTo(canvasDiv)[0];
+        }).addClass('mask').appendTo(canvasDiv)[0];
         $(maskCanvas).mouseenter($.proxy(this.onMouseEnter, this))
             .mousemove($.proxy(this.onMouseMove, this))
             .mouseout($.proxy(this.onMouseOut, this));
@@ -85,6 +85,7 @@
             G_vmlCanvasManager.initElement(canvas);
             G_vmlCanvasManager.initElement(maskCanvas);
         }
+
         var ctx = this.ctx = canvas.getContext("2d");
         this.config = mergeConfig(defaultConfig, userConfig);
         ctx.font = [this.config.fontSize+"pt", this.config.fontFamily].join(" ");

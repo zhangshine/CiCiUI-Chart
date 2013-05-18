@@ -232,7 +232,7 @@
         };
 
         var rangeInfo;
-        if(config.type && config.type==='stacked'){//bar stack chart
+        if(config.type && config.type==='stacked'){//Stacked Bar Chart
             var valueArray = [], sum, dataSeries;
             for(i=1; i<dataSheet.length; i++){
                 sum = 0;
@@ -350,20 +350,33 @@
     Column.prototype.constructor = Column;
 
     Column.prototype.draw=function(dataSheet, width, height, ctx){
+        var config = this.config, i, j;
         //calculate drawing area
-        var labelHeight = this.config.fontSize * 2;
+        var labelHeight = config.fontSize * 2;
         var labelArea = {
             x: 0, y: height - labelHeight, width: width, height: labelHeight
         };
         var titleArea = {
-            x: 0, y: 0, width: width, height: this.config.title ? labelHeight*2 : this.config.fontSize
+            x: 0, y: 0, width: width, height: config.title ? labelHeight*2 : config.fontSize
         };
-        var rangeInfo = this.calculateRange(height-titleArea.height-labelArea.height);
+        var rangeInfo;
+        if(config.type && config.type=='stacked'){ //Stacked Column Chart
+            var valueArray = [], sum, dataSeries;
+            for(i=1; i<dataSheet.length; i++){
+                sum = 0;
+                dataSeries = dataSheet[i];
+                for(j=1; j<dataSeries.length; j++)
+                    sum += dataSeries[j];
+                valueArray.push(sum);
+            }
+            rangeInfo = calculateRange(config.numberCoordinateCount, height-titleArea.height-labelArea.height, valueArray, ctx);
+        } else
+            rangeInfo = this.calculateRange(height-titleArea.height-labelArea.height);
         var valueRangeArea = {
             x: 0, y:titleArea.y+titleArea.height,
             width: rangeInfo.rangeTextWidth, height: height - labelArea.height - titleArea.height
         };
-        var headerIndicatorWidth = calculateMaxWidth(dataSheet[0].slice(1), ctx, this.config.fontSize);
+        var headerIndicatorWidth = calculateMaxWidth(dataSheet[0].slice(1), ctx, config.fontSize);
         var headerIndicatorArea = {
             x:width-headerIndicatorWidth, y: titleArea.y+titleArea.height,
             width: headerIndicatorWidth, height: height - labelArea.height - titleArea.height
@@ -377,8 +390,8 @@
         //draw value range area and grid line
         var zeroY = 0;
         ctx.beginPath();
-        ctx.strokeStyle = this.config.gridStrokeColor;
-        for(var i=0; i<=this.config.numberCoordinateCount; i++){
+        ctx.strokeStyle = config.gridStrokeColor;
+        for(i=0; i<=config.numberCoordinateCount; i++){
             var value = rangeInfo.start + i*rangeInfo.stepSize;
             var y = valueRangeArea.y+valueRangeArea.height-i*rangeInfo.stepLength + 0.5;//0.5 anti-aliasing
             if(value==0){
@@ -387,8 +400,8 @@
                 ctx.moveTo(drawingArea.x, Math.floor(y)+0.5);
                 ctx.lineTo(drawingArea.x+drawingArea.width, Math.floor(y)+0.5);
             }
-            ctx.fillStyle = this.config.fontColor;
-            ctx.fillText(value.toFixed(rangeInfo.stepFix), valueRangeArea.x, y+this.config.fontSize/2);
+            ctx.fillStyle = config.fontColor;
+            ctx.fillText(value.toFixed(rangeInfo.stepFix), valueRangeArea.x, y+config.fontSize/2);
         }
         ctx.stroke();
         ctx.beginPath();
@@ -399,21 +412,33 @@
         ctx.stroke();
 
         //draw bar and labels
-        var barWidth = drawingArea.width/(dataSheet.length-1);
-        var barPadding = barWidth / 8;
-        var elementCount = dataSheet[0].length - 1;
-        var barElementWidth = (barWidth - barPadding*2) / elementCount;
-        var colorArray = getColorArray(elementCount);
+        var barWidth = drawingArea.width/(dataSheet.length-1),
+            barPadding = barWidth / 8,
+            elementCount = dataSheet[0].length - 1,
+            colorArray = getColorArray(elementCount),
+            barElementWidth;
+        if(config.type && config.type=='stacked')
+            barElementWidth = barWidth - barPadding*2;
+        else
+            barElementWidth = (barWidth - barPadding*2) / elementCount;
+
         for(i=1; i<dataSheet.length; i++){
-            var data = dataSheet[i];
-            ctx.fillStyle = this.config.fontColor;
-            ctx.fillText(data[0],
-                drawingArea.x+(i-0.5)*barWidth-ctx.measureText(data[0]).width/2,
-                labelArea.y+labelArea.height *.75);
-            for(var j=1; j<data.length; j++){
-                var barHeight = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
-                this.drawRectBar(drawingArea.x+(i-1)*barWidth+barPadding+(j-1)*barElementWidth,
-                    zeroY-barHeight,  barElementWidth, barHeight, colorArray[j-1], data[0], dataSheet[0][j], data[j]);
+            var data = dataSheet[i], barHeight, sumValue=0;
+            ctx.fillStyle = config.fontColor;
+            ctx.fillText(data[0], drawingArea.x+(i-0.5)*barWidth-ctx.measureText(data[0]).width/2,
+                                  labelArea.y+labelArea.height *.75);
+
+            for(j=1; j<data.length; j++){
+                barHeight = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
+                if(config.type && config.type=='stacked'){
+                    var startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumValue;
+                    sumValue += data[j];
+                    this.drawRectBar(drawingArea.x+(i-1)*barWidth+barPadding, startY-barHeight,
+                                        barElementWidth, barHeight, colorArray[j-1], data[0], dataSheet[0][j], data[j]);
+                } else {
+                    this.drawRectBar(drawingArea.x+(i-1)*barWidth+barPadding+(j-1)*barElementWidth, zeroY-barHeight,
+                                        barElementWidth, barHeight, colorArray[j-1], data[0], dataSheet[0][j], data[j]);
+                }
             }
         }
 

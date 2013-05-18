@@ -15,6 +15,8 @@
     <div id="bar-chart-mix" style="width: 700px; height: 400px;"></div><hr />
     <div id="bar-chart-positive-single" style="width: 700px; height: 400px;"></div><hr />
     <div id="bar-chart-positive-single-header" style="width: 700px; height: 400px;"></div><hr />
+    <div id="bar-chart-positive-stacked" style="width: 700px; height: 250px;"></div><hr />
+    <div id="bar-chart-negative-stacked" style="width: 700px; height: 250px;"></div><hr />
     <script type="text/javascript">
         var dataTablePositive = [
                 ["Date", "Alina", "Ben", "CoCo", "DoDo"],
@@ -70,6 +72,8 @@
             $("#bar-chart-mix").Bar(dataTableMix);
             $("#bar-chart-positive-single").Bar(dataTablePositiveSingle, {title: "CiCiUI"});
             $("#bar-chart-positive-single-header").Bar(dataTablePositiveSingleHeader, {title: "CiCiUI"});
+            $("#bar-chart-positive-stacked").Bar(dataTablePositive, {title: "CiCiUI Stacked Chart", type: "stacked"});
+            $("#bar-chart-negative-stacked").Bar(dataTableNegative, {title: "CiCiUI Stacked Chart", type: "stacked"});
         });
     </script>
 </body>

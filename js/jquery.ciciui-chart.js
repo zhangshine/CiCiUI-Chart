@@ -31,6 +31,7 @@
     var defaultBarConfig = $.extend({}, baseConfig, {
         gridStrokeColor: "rgba(0, 0, 0, .3)",
         numberCoordinateCount: 8
+        /* type: stacked */
     });
 
     var defaultPieConfig = $.extend({}, baseConfig);
@@ -44,8 +45,11 @@
         holeRadiusFactor: 0.3 /* 0< r < 1.0 */
     });
 
-    var defaultLineConfig = $.extend({}, defaultBarConfig, {
+    var defaultLineConfig = $.extend({}, baseConfig, {
+        gridStrokeColor: "rgba(0, 0, 0, .3)",
+        numberCoordinateCount: 8,
         circleRadius: 3
+        /* type: area */
     });
 
     var defaultRadarConfig = $.extend({}, baseConfig, {
@@ -171,9 +175,10 @@
 
     /*------------------- Base GridLine Chart ---------------------*/
     var BaseGridLineChart = function(canvasDiv, width, height, dataSheet, userConfig, defaultConfig){
-        BaseChart.call(this, canvasDiv, width, height, dataSheet, userConfig, defaultConfig);
         if(canvasDiv===undefined) return;
-        this.config.numberCoordinateCount = Math.ceil(this.config.numberCoordinateCount/2)*2;
+        if(userConfig && userConfig.numberCoordinateCount)
+        userConfig.numberCoordinateCount = Math.ceil(userConfig.numberCoordinateCount/2)*2;
+        BaseChart.call(this, canvasDiv, width, height, dataSheet, userConfig, defaultConfig);
     };
     BaseGridLineChart.prototype = new BaseChart;
     BaseGridLineChart.prototype.constructor = BaseGridLineChart;
@@ -198,24 +203,24 @@
     Bar.prototype.constructor = Bar;
 
     Bar.prototype.draw = function(dataSheet, width, height, ctx){
-        var labelArray = [];
-        for(var i=0; i<dataSheet.length; i++){
+        var config=this.config, labelArray = [], i, j;
+        for(i=0; i<dataSheet.length; i++){
             labelArray.push(dataSheet[i][0]);
         }
 
         //calculate drawing area
-        var labelHeight = this.config.fontSize * 2;
+        var labelHeight = config.fontSize * 2;
         var titleArea = {
-            x: 0, y: 0, width: width, height: this.config.title ? labelHeight*2 : this.config.fontSize
+            x: 0, y: 0, width: width, height: config.title ? labelHeight*2 : config.fontSize
         };
         var valueRangeArea ={
             x: 0, y: height - labelHeight, width: width, height: labelHeight
         };
         var labelArea = {
-            x:0, y: titleArea.y+titleArea.height, width: calculateMaxWidth(labelArray, ctx, this.config.fontSize),
+            x:0, y: titleArea.y+titleArea.height, width: calculateMaxWidth(labelArray, ctx, config.fontSize),
             height: height - valueRangeArea.height - titleArea.height
         };
-        var headerIndicatorWidth = calculateMaxWidth(dataSheet[0].slice(1), ctx, this.config.fontSize);
+        var headerIndicatorWidth = calculateMaxWidth(dataSheet[0].slice(1), ctx, config.fontSize);
         var headerIndicatorArea = {
             x:width-headerIndicatorWidth, y: titleArea.y+titleArea.height,
             width: headerIndicatorWidth, height: height - valueRangeArea.height - titleArea.height
@@ -226,13 +231,25 @@
             height: height-titleArea.height-valueRangeArea.height
         };
 
-        var rangeInfo = this.calculateRange(drawingArea.width);
+        var rangeInfo;
+        if(config.type && config.type==='stacked'){//bar stack chart
+            var valueArray = [], sum, dataSeries;
+            for(i=1; i<dataSheet.length; i++){
+                sum = 0;
+                dataSeries = dataSheet[i];
+                for(j=1; j<dataSeries.length; j++)
+                    sum += dataSeries[j];
+                valueArray.push(sum);
+            }
+            rangeInfo = calculateRange(config.numberCoordinateCount, drawingArea.width, valueArray, ctx);
+        } else
+            rangeInfo = this.calculateRange(drawingArea.width);
 
         //draw value range area and grid line
         var zeroX = 0;
         ctx.beginPath();
-        ctx.strokeStyle = this.config.gridStrokeColor;
-        for(i=0; i<=this.config.numberCoordinateCount; i++){
+        ctx.strokeStyle = config.gridStrokeColor;
+        for(i=0; i<=config.numberCoordinateCount; i++){
             var value = rangeInfo.start + i*rangeInfo.stepSize;
             var x = drawingArea.x+i*rangeInfo.stepLength + 0.5;//0.5 anti-aliasing
             if(value==0){
@@ -241,7 +258,7 @@
                 ctx.moveTo(Math.floor(x)+0.5, drawingArea.y);
                 ctx.lineTo(Math.floor(x)+0.5, drawingArea.y+drawingArea.height);
             }
-            ctx.fillStyle = this.config.fontColor;
+            ctx.fillStyle = config.fontColor;
             var text = value.toFixed(rangeInfo.stepFix);
             if(parseFloat(text)===0)
                 text = '0';
@@ -256,21 +273,32 @@
         ctx.stroke();
 
         //draw bar and labels
-        var barHeight = drawingArea.height/(dataSheet.length-1);
-        var barPadding = barHeight / 8;
-        var elementCount = dataSheet[0].length - 1;
-        var barElementHeight = (barHeight - barPadding*2) / elementCount;
-        var colorArray = getColorArray(elementCount);
+        var barHeight = drawingArea.height/(dataSheet.length-1),
+            barPadding = barHeight / 8,
+            elementCount = dataSheet[0].length - 1,
+            colorArray = getColorArray(elementCount),
+            barElementHeight;
+        if(config.type && config.type.toLowerCase()=='stacked')
+            barElementHeight = barHeight - barPadding*2;
+        else
+            barElementHeight = (barHeight - barPadding*2) / elementCount;
         for(i=1; i<dataSheet.length; i++){
-            var data = dataSheet[i];
-            ctx.fillStyle = this.config.fontColor;
-            ctx.fillText(data[0],
-                labelArea.x,
-                drawingArea.y+(i-0.5)*barHeight);
-            for(var j=1; j<data.length; j++){
-                var barWidth = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
-                this.drawRectBar(zeroX, drawingArea.y+(i-1)*barHeight+barPadding+(j-1)*barElementHeight,
-                    barWidth, barElementHeight, colorArray[j-1], data[0], dataSheet[0][j], data[j]);
+            var data = dataSheet[i], barWidth, sumValue=0;
+            ctx.fillStyle = config.fontColor;
+
+            ctx.fillText(data[0], labelArea.x, drawingArea.y+(i-0.5)*barHeight);
+
+            for(j=1; j<data.length; j++){
+                barWidth = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
+                if(config.type && config.type.toLowerCase()=='stacked'){
+                    var startX = rangeInfo.stepLength/rangeInfo.stepSize*sumValue+zeroX;
+                    sumValue += data[j];
+                    this.drawRectBar(startX, drawingArea.y+(i-1)*barHeight+barPadding, barWidth, barElementHeight,
+                                    colorArray[j-1], data[0], dataSheet[0][j], data[j]);
+                } else {
+                    this.drawRectBar(zeroX, drawingArea.y+(i-1)*barHeight+barPadding+(j-1)*barElementHeight,
+                        barWidth, barElementHeight, colorArray[j-1], data[0], dataSheet[0][j], data[j]);
+                }
             }
         }
 

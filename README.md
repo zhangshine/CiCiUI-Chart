@@ -10,6 +10,10 @@ Documentation
 -------------
 http://ciciui.com/chart/documentation/index.html
 
+Release notes
+-------------
+http://ciciui.com/chart/releasenotes.html
+
 License
 -------
 #### Free (Non-commercial) License

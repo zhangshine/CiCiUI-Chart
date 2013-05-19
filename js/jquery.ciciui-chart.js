@@ -1,5 +1,5 @@
 /**
- * CiCiUI Chart v1.0.0
+ * CiCiUI Chart v1.0.5
  * http://ciciui.com/chart/index.html
  * ===================== Free (Non-Commercial) License ==========================
  * For non-commercial, personal projects and applications, you may use CiCiUI
@@ -452,8 +452,6 @@
             for(j=1; j<data.length; j++){
                 barHeight = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
                 if(config.type && config.type=='stacked'){
-//                    var startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumValue;
-//                    sumValue += data[j];
                     if(data[j]>0){
                         startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumPositiveValue;
                         sumPositiveValue += data[j];
@@ -1249,17 +1247,17 @@
             stepInfo = calculateStepSize(maxValue, stepCount);
             end = stepInfo.stepSize * stepCount;
             start = 0;
-            rangeTextWidth = ctx.measureText(end+"XX").width;
+            rangeTextWidth = ctx.measureText(end.toFixed(stepInfo.decimalFix)+"XX").width;
         } else if(maxValue<0){//all negative value
             end = 0;
             stepInfo = calculateStepSize(minValue, stepCount);
             start = -stepInfo.stepSize * stepCount;
-            rangeTextWidth = ctx.measureText(start+"XX").width;
+            rangeTextWidth = ctx.measureText(start.toFixed(stepInfo.decimalFix)+"XX").width;
         } else {
             stepInfo = calculateStepSize(Math.max(Math.abs(minValue), maxValue), stepCount/2);
             end = stepInfo.stepSize * stepCount/2;
             start = -end;
-            rangeTextWidth = ctx.measureText(start+"XX").width;
+            rangeTextWidth = ctx.measureText(start.toFixed(stepInfo.decimalFix)+"XX").width;
         }
         stepLength = sumLength / stepCount;
 

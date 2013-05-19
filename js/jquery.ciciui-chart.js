@@ -233,13 +233,20 @@
 
         var rangeInfo;
         if(config.type && config.type==='stacked'){//Stacked Bar Chart
-            var valueArray = [], sum, dataSeries;
+            var valueArray = [], sumPositive= 0, sumNegative=0, dataSeries, d=0;
             for(i=1; i<dataSheet.length; i++){
-                sum = 0;
+                sumPositive = 0;
+                sumNegative = 0;
                 dataSeries = dataSheet[i];
-                for(j=1; j<dataSeries.length; j++)
-                    sum += dataSeries[j];
-                valueArray.push(sum);
+                for(j=1; j<dataSeries.length; j++){
+                    d = dataSeries[j];
+                    if(d>=0)
+                        sumPositive += d;
+                    else
+                        sumNegative += d;
+                }
+                if(sumPositive!=0) valueArray.push(sumPositive);
+                if(sumNegative!=0) valueArray.push(sumNegative);
             }
             rangeInfo = calculateRange(config.numberCoordinateCount, drawingArea.width, valueArray, ctx);
         } else
@@ -283,7 +290,7 @@
         else
             barElementHeight = (barHeight - barPadding*2) / elementCount;
         for(i=1; i<dataSheet.length; i++){
-            var data = dataSheet[i], barWidth, sumValue=0;
+            var data = dataSheet[i], barWidth, sumPositiveValue= 0, sumNegativeValue = 0, startX;
             ctx.fillStyle = config.fontColor;
 
             ctx.fillText(data[0], labelArea.x, drawingArea.y+(i-0.5)*barHeight);
@@ -291,8 +298,15 @@
             for(j=1; j<data.length; j++){
                 barWidth = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
                 if(config.type && config.type.toLowerCase()=='stacked'){
-                    var startX = rangeInfo.stepLength/rangeInfo.stepSize*sumValue+zeroX;
-                    sumValue += data[j];
+                    if(data[j]>0){
+                        startX = rangeInfo.stepLength/rangeInfo.stepSize*sumPositiveValue+zeroX;
+                        sumPositiveValue += data[j];
+                    } else if(data[j]<0) {
+                        startX = rangeInfo.stepLength/rangeInfo.stepSize*sumNegativeValue+zeroX;
+                        sumNegativeValue += data[j];
+                    } else {
+                        continue;
+                    }
                     this.drawRectBar(startX, drawingArea.y+(i-1)*barHeight+barPadding, barWidth, barElementHeight,
                                     colorArray[j-1], data[0], dataSheet[0][j], data[j]);
                 } else {
@@ -361,13 +375,20 @@
         };
         var rangeInfo;
         if(config.type && config.type=='stacked'){ //Stacked Column Chart
-            var valueArray = [], sum, dataSeries;
+            var valueArray = [], sumPositive, sumNegative, dataSeries, d;
             for(i=1; i<dataSheet.length; i++){
-                sum = 0;
+                sumPositive = 0;
+                sumNegative = 0;
                 dataSeries = dataSheet[i];
-                for(j=1; j<dataSeries.length; j++)
-                    sum += dataSeries[j];
-                valueArray.push(sum);
+                for(j=1; j<dataSeries.length; j++){
+                    d = dataSeries[j];
+                    if(d>=0)
+                        sumPositive += d;
+                    else
+                        sumNegative += d;
+                }
+                if(sumPositive!=0) valueArray.push(sumPositive);
+                if(sumNegative!=0) valueArray.push(sumNegative);
             }
             rangeInfo = calculateRange(config.numberCoordinateCount, height-titleArea.height-labelArea.height, valueArray, ctx);
         } else
@@ -423,7 +444,7 @@
             barElementWidth = (barWidth - barPadding*2) / elementCount;
 
         for(i=1; i<dataSheet.length; i++){
-            var data = dataSheet[i], barHeight, sumValue=0;
+            var data = dataSheet[i], barHeight, sumPositiveValue= 0, sumNegativeValue= 0, startY=0;
             ctx.fillStyle = config.fontColor;
             ctx.fillText(data[0], drawingArea.x+(i-0.5)*barWidth-ctx.measureText(data[0]).width/2,
                                   labelArea.y+labelArea.height *.75);
@@ -431,8 +452,17 @@
             for(j=1; j<data.length; j++){
                 barHeight = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
                 if(config.type && config.type=='stacked'){
-                    var startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumValue;
-                    sumValue += data[j];
+//                    var startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumValue;
+//                    sumValue += data[j];
+                    if(data[j]>0){
+                        startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumPositiveValue;
+                        sumPositiveValue += data[j];
+                    } else if(data[j]<0){
+                        startY = zeroY - rangeInfo.stepLength/rangeInfo.stepSize*sumNegativeValue;
+                        sumNegativeValue += data[j];
+                    } else {
+                        continue;
+                    }
                     this.drawRectBar(drawingArea.x+(i-1)*barWidth+barPadding, startY-barHeight,
                                         barElementWidth, barHeight, colorArray[j-1], data[0], dataSheet[0][j], data[j]);
                 } else {

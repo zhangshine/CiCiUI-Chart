@@ -15,6 +15,10 @@
 <div id="line-chart-negative-decimal-mix" style="width: 700px; height: 400px;"></div><hr />
 
 <div id="line-area-chart-positive" style="width: 700px; height: 400px;"></div><hr />
+
+<div id="spline-chart-positive" style="width: 700px; height: 400px;"></div><hr />
+
+<div id="spline-area-chart-positive" style="width: 700px; height: 400px;"></div><hr />
 <script type="text/javascript">
     var dataTablePositive = [
         ["Date", "Alina", "Ben", "CoCo", "DoDo"],
@@ -64,7 +68,9 @@
         $("#line-chart-negative").Line(dataTableNegative);
         $("#line-chart-negative-decimal").Line(dataTableNegativeDecimal);
         $("#line-chart-negative-decimal-mix").Line(dataTableNegativeDecimalMix);
-        $("#line-area-chart-positive").Line(lineArea, {type : "Area"});
+        $("#line-area-chart-positive").Line(lineArea, {type : "Area", title: "Line Area Chart"});
+        $("#spline-chart-positive").Line(lineArea, {type : "Spline", title:"Spline Chart"});
+        $("#spline-area-chart-positive").Line(lineArea, {type : "SplineArea", title:"Spline Area Chart"});
     });
 </script>
 </body>

@@ -49,7 +49,7 @@
         gridStrokeColor: "rgba(0, 0, 0, .3)",
         numberCoordinateCount: 8,
         circleRadius: 3
-        /* type: area */
+        /* type: default|area|spline */
     });
 
     var defaultRadarConfig = $.extend({}, baseConfig, {
@@ -92,6 +92,7 @@
 
         var ctx = this.ctx = canvas.getContext("2d");
         this.config = mergeConfig(defaultConfig, userConfig);
+        if(this.config.type) this.config.type = this.config.type.toLowerCase();
         ctx.font = [this.config.fontSize+"pt", this.config.fontFamily].join(" ");
         this.singleCharWidth = ctx.measureText('X').width;
 
@@ -285,7 +286,7 @@
             elementCount = dataSheet[0].length - 1,
             colorArray = getColorArray(elementCount),
             barElementHeight;
-        if(config.type && config.type.toLowerCase()=='stacked')
+        if(config.type && config.type==='stacked')
             barElementHeight = barHeight - barPadding*2;
         else
             barElementHeight = (barHeight - barPadding*2) / elementCount;
@@ -297,7 +298,7 @@
 
             for(j=1; j<data.length; j++){
                 barWidth = rangeInfo.stepLength/rangeInfo.stepSize*data[j];
-                if(config.type && config.type.toLowerCase()=='stacked'){
+                if(config.type && config.type==='stacked'){
                     if(data[j]>0){
                         startX = rangeInfo.stepLength/rangeInfo.stepSize*sumPositiveValue+zeroX;
                         sumPositiveValue += data[j];
@@ -905,7 +906,8 @@
         ctx.lineTo(drawingArea.x+drawingArea.width, Math.floor(zeroY)+0.5);
         ctx.stroke();
 
-        var isLineArea = this.config.type!==undefined && this.config.type.toLowerCase()=="area",
+        var isLineArea = this.config.type && (this.config.type==="area" || this.config.type==="splinearea"),
+            isSpline = this.config.type && (this.config.type==="spline" || this.config.type==="splinearea"),
             sectionCount = dataSheet.length - 1,
             sectionWidth = drawingArea.width/(sectionCount - (isLineArea ? 1 : 0)),
             colorArray = getColorArray(sectionCount),
@@ -941,9 +943,13 @@
                 ctx.fillStyle = rgbaColorArray[i-1];
                 var dot = dotArray[0];
                 ctx.moveTo(dot.x, zeroY);
-                for(j=0; j<dotArray.length; j++){
+                ctx.lineTo(dotArray[0].x, dotArray[0].y);
+                for(j=1; j<dotArray.length; j++){
                     dot = dotArray[j];
-                    ctx.lineTo(dot.x, dot.y)
+                    if(isSpline)
+                        ctx.bezierCurveTo((dotArray[j-1].x+dot.x)/2, dotArray[j-1].y, (dotArray[j-1].x+dot.x)/2, dot.y, dot.x, dot.y);
+                    else
+                        ctx.lineTo(dot.x, dot.y)
                 }
                 ctx.lineTo(dot.x, zeroY);
                 ctx.closePath();
@@ -954,9 +960,12 @@
             ctx.fillStyle = color;
             ctx.strokeStyle = color;
             ctx.lineWidth = 2;
+            ctx.moveTo(dotArray[0].x, dotArray[0].y);
             for(j=1; j<dotArray.length; j++){
-                ctx.moveTo(dotArray[j-1].x, dotArray[j-1].y);
-                ctx.lineTo(dotArray[j].x, dotArray[j].y)
+                if(isSpline)
+                    ctx.bezierCurveTo((dotArray[j-1].x+dotArray[j].x)/2, dotArray[j-1].y, (dotArray[j-1].x+dotArray[j].x)/2, dotArray[j].y, dotArray[j].x, dotArray[j].y);
+                else
+                    ctx.lineTo(dotArray[j].x, dotArray[j].y)
             }
             ctx.stroke();
         }

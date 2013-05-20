@@ -1,5 +1,5 @@
 /**
- * CiCiUI Chart v1.0.5
+ * CiCiUI Chart v1.0.7
  * http://ciciui.com/chart/index.html
  * ===================== Free (Non-Commercial) License ==========================
  * For non-commercial, personal projects and applications, you may use CiCiUI
@@ -49,7 +49,7 @@
         gridStrokeColor: "rgba(0, 0, 0, .3)",
         numberCoordinateCount: 8,
         circleRadius: 3
-        /* type: default|area|spline */
+        /* type: default|Area|Spline|SplineArea */
     });
 
     var defaultRadarConfig = $.extend({}, baseConfig, {
@@ -906,18 +906,21 @@
         ctx.lineTo(drawingArea.x+drawingArea.width, Math.floor(zeroY)+0.5);
         ctx.stroke();
 
-        var isLineArea = this.config.type && (this.config.type==="area" || this.config.type==="splinearea"),
+        var isArea = this.config.type && (this.config.type==="area" || this.config.type==="splinearea"),
             isSpline = this.config.type && (this.config.type==="spline" || this.config.type==="splinearea"),
             sectionCount = dataSheet.length - 1,
-            sectionWidth = drawingArea.width/(sectionCount - (isLineArea ? 1 : 0)),
+            sectionWidth = drawingArea.width/(sectionCount - (isArea ? 1 : 0)),
             colorArray = getColorArray(sectionCount),
             rgbaColorArray = getRGBAColorArray(sectionCount);
         //draw labels
         ctx.fillStyle = this.config.fontColor;
+        var tx, tw;
         for(i=1; i<dataSheet.length; i++){
-            ctx.fillText(dataSheet[i][0],
-                drawingArea.x+(i-0.5)*sectionWidth-ctx.measureText(dataSheet[i][0]).width/2,
-                labelArea.y+labelArea.height*0.75);
+            tw = ctx.measureText(dataSheet[i][0]).width;
+            tx = drawingArea.x+(i-(isArea ? 1 : 0.5))*sectionWidth-tw/2;
+            if(tx<0) tx=0;
+            if((tx+tw)>width) tx = width - tw;
+            ctx.fillText(dataSheet[i][0], tx, labelArea.y+labelArea.height*0.75);
         }
         var dotArray, j, color;
         for(i=1; i<=sectionCount; i++){
@@ -926,7 +929,7 @@
             color=colorArray[i-1];
             for(j=1; j<dataSheet.length; j++){
                 dotArray.push({
-                    x : drawingArea.x+j*sectionWidth - (isLineArea ? 1 : 0.5)*sectionWidth,
+                    x : drawingArea.x+j*sectionWidth - (isArea ? 1 : 0.5)*sectionWidth,
                     y : zeroY-rangeInfo.stepLength/rangeInfo.stepSize*dataSheet[j][i],
                     label: dataSheet[j][0],
                     header: dataSheet[0][i],
@@ -937,7 +940,7 @@
                 this.saveDotElementPos(dotArray[j].x, dotArray[j].y, this.config.circleRadius, color,
                     dotArray[j].label, dotArray[j].header, dotArray[j].value);
             }
-            if(isLineArea){
+            if(isArea){
                 ctx.save();
                 ctx.beginPath();
                 ctx.fillStyle = rgbaColorArray[i-1];

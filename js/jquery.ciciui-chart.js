@@ -1,5 +1,5 @@
 /**
- * CiCiUI Chart v1.0.7
+ * CiCiUI Chart v1.1.0
  * http://ciciui.com/chart/index.html
  * ===================== Free (Non-Commercial) License ==========================
  * For non-commercial, personal projects and applications, you may use CiCiUI

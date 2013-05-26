@@ -582,7 +582,8 @@
         this.ctx.beginPath();
         this.ctx.fillStyle = color;
         this.ctx.moveTo(this.elementInfo.x, this.elementInfo.y);
-        this.ctx.arc(this.elementInfo.x, this.elementInfo.y, this.elementInfo.radius, start, end, false);
+        this.ctx.arc(this.elementInfo.x, this.elementInfo.y, this.elementInfo.radius, start, (start+end)/2, false);
+        this.ctx.arc(this.elementInfo.x, this.elementInfo.y, this.elementInfo.radius, (start+end)/2, end, false);
         this.ctx.lineTo(this.elementInfo.x, this.elementInfo.y);
         this.ctx.closePath();
         this.ctx.fill();
@@ -690,7 +691,8 @@
         ctx.beginPath();
         ctx.fillStyle = color;
         ctx.moveTo(this.elementInfo.x, this.elementInfo.y);
-        ctx.arc(this.elementInfo.x, this.elementInfo.y, endR, start, end, false);
+        ctx.arc(this.elementInfo.x, this.elementInfo.y, endR, start, (start+end)/2, false);
+        ctx.arc(this.elementInfo.x, this.elementInfo.y, endR, (start+end)/2, end, false);
         ctx.lineTo(this.elementInfo.x, this.elementInfo.y);
         ctx.closePath();
         ctx.fill();
@@ -810,7 +812,8 @@
             });
             ctx.fillStyle = colorArray[i];
             ctx.beginPath();
-            ctx.arc(this.elementInfo.x, this.elementInfo.y, r, startAngle, endAngle, false);
+            ctx.arc(this.elementInfo.x, this.elementInfo.y, r, startAngle, (startAngle+endAngle)/2, false);
+            ctx.arc(this.elementInfo.x, this.elementInfo.y, r, (startAngle+endAngle)/2, endAngle, false);
             ctx.lineTo(this.elementInfo.x, this.elementInfo.y);
             ctx.closePath();
             ctx.fill();

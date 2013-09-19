@@ -16,11 +16,7 @@ http://ciciui.com/chart/releasenotes.html
 
 License
 -------
-#### Free (Non-commercial) License
-For non-commercial, personal projects and applications, you may use CiCiUI Chart under the terms of the MIT License. You may use CiCiUI Chart for free.
-#### Commercial License
-This is the appropriate option if you want to use CiCiUI Chart to develop commercial websites or applications. Please refer to the following link for more details   
-http://ciciui.com/chart/purchase.html
+MIT License.
 
 Compress
 --------
